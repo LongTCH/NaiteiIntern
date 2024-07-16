@@ -6,8 +6,6 @@ class MyCustomException extends Exception {
         super(message);
     }
 }
-
-
 class CustomExceptionExample {
     public void performOperation(int value) throws MyCustomException {
         if (value < 0) {
@@ -17,8 +15,6 @@ class CustomExceptionExample {
         }
     }
 }
-
-
 public class CustomException {
     public static void main(String[] args) {
         CustomExceptionExample example = new CustomExceptionExample();

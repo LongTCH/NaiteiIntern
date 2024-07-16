@@ -18,30 +18,45 @@ class Sender{
 
 class Counter{
     private int count = 0;
-
     public void inc(String msg){
         synchronized (this){
-            System.out.println("Đang tăng..... " + msg);
-            System.out.println("In ra: " + msg);
+            System.out.println("Đang in..... " + msg);
         }
+        System.out.println("In ra: " + msg);
     }
 }
-
 class Counter1{
-    private int count = 0;
     private Lock lock = new ReentrantLock();
     public void inc(String msg){
         lock.lock();
-        System.out.println("Đang tăng..... " + msg);
-        //count++;
-        //lock.unlock();
-        System.out.println("In ra: " + msg);
+        System.out.println("Đang in..... " + msg);
         lock.unlock();
+        System.out.println("In ra: " + msg);
     }
-
 }
+
 public class SynThreads {
     public static void main(String[] args) {
+        Counter counter = new Counter();
+        Thread t1 = new Thread(()->{
+            counter.inc("Hello ");
+        });
+        Thread t2 = new Thread(()->{
+            counter.inc("Hi ");
+        });
+        t1.start();
+        t2.start();
+
+        Counter1 counter1 = new Counter1();
+        Thread t3 = new Thread(()->{
+            counter1.inc("Hello ");
+        });
+        Thread t4 = new Thread(()->{
+            counter1.inc("Hi ");
+        });
+        t3.start();
+        t4.start();
+
 //        Sender sender = new Sender();
 //        Thread t1 = new Thread(()->
 //                sender.send("Hi ")
@@ -53,28 +68,5 @@ public class SynThreads {
 //        t1.start();
 //        t2.start();
 
-        Counter counter = new Counter();
-        Thread t1 = new Thread(()->{
-           counter.inc("Hello ");
-        });
-        Thread t2 = new Thread(()->{
-            counter.inc("Hi ");
-        });
-
-        Counter1 counter1 = new Counter1();
-        Thread t3 = new Thread(()->{
-           counter1.inc("Hello ");
-        });
-        Thread t4 = new Thread(()->{
-            counter1.inc("Hi ");
-        });
-
-
-//        t1.start();
-//        t2.start();
-
-
-        t3.start();
-        t4.start();
     }
 }
