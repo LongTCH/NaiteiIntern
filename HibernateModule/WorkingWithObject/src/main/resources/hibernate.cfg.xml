@@ -18,8 +18,7 @@
         <property name="show_sql">true</property>
 
         <!-- List of XML mapping files -->
-        <!-- path of a mapping file, for us its our
-            Student class and Address class which is a POJO -->
         <mapping class="org.example.entities.Person"/>
+        <mapping class="org.example.entities.User"/>
     </session-factory>
 </hibernate-configuration>

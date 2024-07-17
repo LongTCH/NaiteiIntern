@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.entities.Person;
+import org.example.entities.User;
 import org.example.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -8,7 +9,7 @@ import org.hibernate.Transaction;
 public class UpdateMerge {
     public static void main(String[] args) {
         UpdateMerge updateMerge = new UpdateMerge();
-        updateMerge.update();
+        updateMerge.saveOrUpdateUser();
     }
 
     void update() {
@@ -40,6 +41,17 @@ public class UpdateMerge {
         Transaction transaction = session.beginTransaction();
         Person mergedPerson = session.merge(detachedPerson);
         detachedPerson.setName("Another Name");
+        transaction.commit();
+        session.close();
+    }
+
+    void saveOrUpdateUser(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        User user = new User();
+        user.setUsername("New User");
+        user.setEmail("user@email.com");
+        session.saveOrUpdate(user); // Save or update depending on the state
         transaction.commit();
         session.close();
     }
