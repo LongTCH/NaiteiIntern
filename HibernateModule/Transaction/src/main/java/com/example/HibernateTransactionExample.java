@@ -32,7 +32,7 @@ public class HibernateTransactionExample {
             // Thay đổi một số thông tin và lưu lại
             vehicle.setColor("Blue");
             session.update(vehicle);
-            connection.rollback(savepoint1);
+//            connection.rollback(savepoint1);
             // Commit giao dịch
 //            transaction.commit();
         } catch (Exception e) {

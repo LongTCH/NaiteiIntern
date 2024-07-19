@@ -13,7 +13,7 @@ public class Vehicle {
     private int yearOfManufacture;
     private String color;
     @Version
-    private Integer version = 0; // Trường version cho Optimistic Locking
+    private int version ;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

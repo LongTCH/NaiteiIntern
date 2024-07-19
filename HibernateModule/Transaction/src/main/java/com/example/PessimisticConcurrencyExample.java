@@ -1,31 +1,39 @@
 package com.example;
-
-import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.LockMode;
 
 public class PessimisticConcurrencyExample {
     public static void main(String[] args) {
+        Thread thread1 = new Thread(new PessimisticUpdateVehicleTask(1L, "Green"));
+        Thread thread2 = new Thread(new PessimisticUpdateVehicleTask(1L, "Blue"));
+        thread1.start();
+        thread2.start();
+    }
+}
+class PessimisticUpdateVehicleTask implements Runnable {
+    private Long vehicleId;
+    private String newColor;
+    public PessimisticUpdateVehicleTask(Long vehicleId, String newColor) {
+        this.vehicleId = vehicleId;
+        this.newColor = newColor;
+    }
+    @Override
+    public void run() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx1 = null;
-        Transaction tx2 = null;
+        Transaction tx = null;
         try {
-            tx1 = session.beginTransaction();
-            // Tìm một đối tượng Vehicle với khóa pessimistic lock
-            Vehicle vehicle1 = session.get(Vehicle.class, 1L, LockMode.PESSIMISTIC_WRITE);
-            System.out.println("Transaction 1 - Read Vehicle: " + vehicle1);
-            vehicle1.setColor("Green");
-            tx1.commit();
-            System.out.println("Transaction 1 - Commit successful");
-            // Bắt đầu giao dịch thứ hai
-            tx2 = session.beginTransaction();
-            Vehicle vehicle2 = session.get(Vehicle.class, 1L, LockMode.PESSIMISTIC_WRITE);
-            System.out.println("Transaction 2 - Read Vehicle: " + vehicle2);
-            vehicle2.setColor("Blue");
-            // Commit để thấy hiện tượng cạnh tranh
-            tx2.commit();
-            System.out.println("Transaction 2 - Commit successful");
+            tx = session.beginTransaction();
+            Vehicle vehicle = session.get(Vehicle.class, vehicleId, LockMode.PESSIMISTIC_WRITE);
+            System.out.println(Thread.currentThread().getName() + " - Read Vehicle: " + vehicle);
+            vehicle.setColor(newColor);
+            tx.commit();
+            System.out.println(Thread.currentThread().getName() + " - Commit successful");
+
         } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
         } finally {
             session.close();
