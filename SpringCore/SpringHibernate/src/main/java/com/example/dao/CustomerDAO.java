@@ -1,43 +1,29 @@
 package com.example.dao;
 import java.util.List;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import com.example.entities.Customer;
-@Repository(value = "customerDAO")
+@Repository
+@Transactional
 public class CustomerDAO {
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
     public void save(Customer customer) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.persist(customer);
-        tx.commit();
-        session.close();
+        entityManager.persist(customer);
     }
     public void update(Customer customer) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.update(customer);
-        tx.commit();
-        session.close();
+        entityManager.merge(customer);
     }
     public List<Customer> findAll() {
-        Session session = this.sessionFactory.openSession();
-        List<Customer> result = session.createQuery("FROM Customer", Customer.class).getResultList();
-        return result;
+        return entityManager.createQuery("FROM Customer", Customer.class)
+                .getResultList();
     }
     public Customer findById(int id) {
-        Session session = this.sessionFactory.openSession();
-        return session.find(Customer.class, id);
+        return entityManager.find(Customer.class, id);
     }
     public void delete(Customer customer) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.delete(customer);
-        tx.commit();
-        session.close();
+        entityManager.remove(entityManager.contains(customer) ? customer : entityManager.merge(customer));
     }
 }

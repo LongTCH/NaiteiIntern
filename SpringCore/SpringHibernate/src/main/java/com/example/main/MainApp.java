@@ -7,13 +7,20 @@ public class MainApp {
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         CustomerDAO customerDAO = (CustomerDAO) context.getBean("customerDAO");
-        customerDAO.save(new Customer("Rooney", "Manchester"));
-        customerDAO.save(new Customer("Gerrard", "Liverpool"));
+        customerDAO.save(new Customer("Jack", "London"));
+        customerDAO.save(new Customer("John", "Anh"));
 
         List<Customer> listCustomer = customerDAO.findAll();
         for (Customer customer : listCustomer) {
             System.out.println(customer.getId() + " - " + customer.getName() + " - " + customer.getAddress());
         }
+
+//        Customer customerToUpdate = listCustomer.get(0);
+//        customerToUpdate.setAddress("Canada");
+//        customerDAO.update(customerToUpdate);
+
+//        Customer customerToDelete = listCustomer.get(0);
+//        customerDAO.delete(customerToDelete);
         context.close();
     }
 }
