@@ -51,7 +51,7 @@ public class EmployeeController {
     public String saveEmployeeAction(@ModelAttribute("employee") @Validated Employee employee,
                                      BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "empSave";
+            return "addEmp";
         }
         model.addAttribute("emp", employee);
         emps.put(employee.getId(), employee);
